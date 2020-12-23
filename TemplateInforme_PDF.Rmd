@@ -1,0 +1,188 @@
+---
+title: 
+lang: es
+output: pdf_document
+toc: TRUE # pone el índice
+header-includes:
+- \usepackage{draftwatermark} # paquete para generar marca de agua en el documento
+- \SetWatermarkText{Preliminar} # pone marca de agua en el documento cuando es preliminar
+- \usepackage{fancyhdr} #
+- \usepackage{graphicx}
+- \usepackage{parskip}
+- \usepackage{geometry}
+- \usepackage{helvet}
+- \pagestyle{fancy}
+- \geometry{top=1.5cm, bottom=1cm, left=2.5cm, right=2.5cm}
+- \renewcommand{\familydefault}{\sfdefault}
+- \newcommand{\sietepuntos}{\fontsize{7pt}{\baselineskip}\selectfont} # tamaños de letra
+- \newcommand{\cincopuntos}{\fontsize{6pt}{\baselineskip}\selectfont} # tamaños de letra
+- \addtolength{\headheight}{4.5\baselineskip}
+- \setlength{\headheight}{70pt}
+- \setlength{\footskip}{5pt}
+- \setlength{\textheight}{658pt}
+- \fancyhead[CO,CE]{\includegraphics[height=1.5cm]{logoifop.png}\\ \sietepuntos INSTITUTO DE FOMENTO PESQUERO / DIVISION INVESTIGACION PESQUERA}
+- \fancyhead[LO,LE]{ }
+- \fancyhead[RO,RE]{ }
+- \renewcommand{\headrulewidth}{0.5pt}
+- \fancyfoot[C]{\cincopuntos \thepage \\ \vspace{-0.2cm} ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ \\ \vspace{-0.2cm} \cincopuntos CONVENIO DE DESEMPEÑO 2020 IFOP/SUBSECRETARÍA DE ECONOMíA Y EMT \\ \vspace{-0.1cm} SEGUNDO INFORME. SARDINA COMÚN DE LA  REGIÓN DE VALPARAÍSO A LA REGIÓN DE LOS LAGOS, 2021}
+---
+
+**7. ANEXOS**
+
+**ANEXO I.** Datos y modelo de sardina común correspondiente a la asesoría de septiembre 2020 Y marzo 2021 (MAE0920 y MAE0321).
+
+\pagebreak
+
+# RESUMEN EJECUTIVO
+
+\pagebreak
+
+# 1. OBJETIVOS
+
+## 1.1. Objetivo general
+
+Proveer la asesoría científica necesaria para la determinación del estado de explotación y la Captura Biológicamente Aceptable (CBA) que deberá llevar o mantener al Rendimiento Máximo Sostenible (RMS), la pesquería de sardina común de la Región de Valparaíso a la Región de Los Lagos, bajo condiciones de riesgo e incertidumbre, cuantificando las distintas fuentes e integrando la mejor información científica-técnica disponible.
+
+## 1.2. Objetivos específicos
+
+1.  Implementar procedimientos de evaluación de stock basados en protocolos científicos para la determinación del estatus de sardina común, con arreglo al nivel de información, conocimiento e incertidumbre correspondiente, conforme a los estándares actuales en ciencia pesquera.
+
+2.  Establecer el estatus actualizado de sardina común, sobre la base de sus principales indicadores estandarizados de estado y flujo, propagando para estos efectos todas las fuentes de incertidumbre subyacente a la pesquería.
+
+3.  Determinar niveles de Captura Biológicamente Aceptable (CBA) que lleven y/o mantenga la pesquería en torno al Rendimiento Máximo Sostenible (RMS), a partir de un análisis de riesgo en condiciones de incertidumbre de no alcanzar los objetivos de conservación y sostenibilidad conforme lo establece la LGPA y contenidos en el Plan de Manejo y/o en el Programa de Recuperación respectivo, según corresponda.
+
+4.  Informar el avance del Programa de Mejoramiento Continuo de la Calidad en la Asesoría Científica (PMCCAC) realizado durante el presente estudio, respecto al cumplimiento de recomendaciones formuladas en procesos de RPEI y priorizadas por el CCT, cuando corresponda.
+
+\pagebreak
+
+# 2. ANTECEDENTES
+
+**Ejemplo Nº1: cómo insertar una figura de la carpeta Figuras"**
+
+```{=tex}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{Figuras/Figura1.png}
+\end{center}
+```
+\small \textbf{Figura 1}. Distribución espacial de datos provenientes del muestreo biológico realizado por IFOP para el monitoreo de la pesquería de sardina común. La línea color café corresponde a la isóbata de los 200 m. \vspace{0.5cm} \normalsize
+
+**Ejemplo Nº2: cómo generar un plot y que quede guardado en la carpeta Figuras**
+
+```{r antecedentes_desembarques,warning=F, include=T, message=F, echo=FALSE,fig.height=3.5,fig.width=5,fig.align="center",fig.path="Figuras/",dev=c("pdf","bmp")}
+year<-seq(2006,2020,1)
+desemb<-c(39146,50506,45078,49225,20123,16429,19763,21888,22951,23643,18495,14134,8366,12565,NA)
+cuota<-c(40522,50872,41904,58481,30966,17693,14500,21670,18276,23848,18380,20000,18897,11137,15471)
+
+
+par(mfcol=c(1,1),mar=c(4,4,1,1))
+plot(year,desemb,type="h",lwd=15,ylab="Desembarques (t.)",xlab="Año",ylim=c(0,60000),xaxp=c(2000,2021,21),col="cadetblue4",cex.lab=0.8,cex.axis=0.8)
+lines(year,cuota,type="l",lwd=2,col=1)
+legend(2011,60000,c("Datos oficiales","CBA"),lwd=c(10,2),col=c("cadetblue4",1),bty="n",cex=0.8)
+```
+
+\pagebreak
+
+# 3. METODOLOGÍA DE TRABAJO
+
+## 3.1. Objetivo específico 1:
+
+\vspace{-0.2cm}
+
+*"Implementar procedimientos de evaluación de stock basados en protocolos científicos para la determinación del estatus de sardina común, con arreglo al nivel de información, conocimiento e incertidumbre correspondiente, conforme a los estándares actuales en ciencia pesquera."*
+
+**Ejemplo Nº3 cómo incorporar una tabla con formulas**
+
+**Algunos ayuda memoria para escribir ecuaciones en latex :**
+
+<http://minisconlatex.blogspot.com/2010/11/ecuaciones.html>
+
+<https://manualdelatex.com/tutoriales/ecuaciones>
+
+<https://rinconmatematico.com/instructivolatex/formulas.htm>
+
+```{=tex}
+\small
+\begin{center} 
+\textbf{Tabla 4.}
+\end{center}
+\begin{center} 
+\vspace{-0.2cm} Modelo de las observaciones del Modelo Anual con información en tallas.
+\end{center}
+```
++----------------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+
+| Variable                                           | Ecuación                                                                                          | Descripción                                                                                   |
++====================================================+===================================================================================================+===============================================================================================+
+| Captura estimada en número a la edad               | $\hat{C}_{l,t}=\frac{F_{l,t}}{Z_{l,t}}N_{l,t}\left(1-S_{l,t}\right)$                              | $\hat{C}_{l,t}$ Captura en número estimada a la longitud *l*                                  |
+|                                                    |                                                                                                   |                                                                                               |
+|                                                    |                                                                                                   | y *t* en el año.                                                                              |
++----------------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+
+| Desembarques en peso                               | $\hat{Y}_t=\sum_l \hat{C}_{l,t}w_{l}$                                                             | $w_{l}$ es el peso medio a la longitud *l*                                                    |
++----------------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+
+| Proporción de la captura a la longitud de la flota | $\hat{p}^f_{l,t}=\frac{\hat{C}_{l,t}}{\sum_l\hat{C}_{l,t}}$                                       | $\hat{C}_{l,t}$ Captura en número estimada a la longitud *l*.                                 |
++----------------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+
+| Abundancia a la longitud del crucero               | $\hat{N}_{l,t}^c=N_{l,t} e^{-dt^cZ_{l,t}}S^c_l$                                                   | $dt^c$ es la fracción del año en la cual se realiza el crucero                                |
++----------------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+
+| Selectividad del crucero                           | $S_l^c=\left(1+exp\left[-ln19\frac{(l-l_{50\%}^c}{\Delta^c}\right]\right)^{-1}$                   | $l_{50\%}^c$ longitud al 50%                                                                  |
+|                                                    |                                                                                                   |                                                                                               |
+|                                                    |                                                                                                   | $\Delta^c$ rango entre la longitud al 95% y 50%                                               |
++----------------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+
+| Biomasa total del crucero                          | $\hat{B}_t^c=q^c\sum_l\hat{N}_{l,t}^{c}w_l$                                                       | $w_{l}$ es el peso medio a la longitud $q^c$ es la capturabilidad/ disponibilidad del crucero |
++----------------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+
+| Captura por Unidad de esfuerzo                     | $\hat{CPUE}_t=q\left[\sum^{lmax}_{lmin}S_{l,t}N_{l,t}w_l\frac{(1-exp(-Z_{l,t}))}{Z_{l,t}}\right]$ | *q*: coeficiente de capturabilidad                                                            |
++----------------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+
+
+\pagebreak
+
+## 3.2. Objetivo específico 2:
+
+\vspace{-0.2cm}
+
+*"Establecer el estatus actualizado de sardina común, sobre la base de sus principales indicadores estandarizados de estado y flujo, propagando para estos efectos todas las fuentes de incertidumbre subyacente a la pesquería."*
+
+## 3.3. Objetivo específico 3:
+
+\vspace{-0.2cm}
+
+*"Determinar niveles de Captura Biológicamente Aceptable (CBA) que lleven y/o mantenga la pesquería en torno al Rendimiento Máximo Sostenible (RMS), a partir de un análisis de riesgo en condiciones de incertidumbre de no alcanzar los objetivos de conservación y sostenibilidad conforme lo establece la LGPA y contenidos en el Plan de Manejo y/o en el Programa de Recuperación respectivo, según corresponda."*
+
+## 3.4. Objetivo específico 4:
+
+\vspace{-0.2cm}
+
+*"Informar el avance del Programa de Mejoramiento Continuo de la Calidad en la Asesoría Científica (PMCCAC) realizado durante el presente estudio, respecto al cumplimiento de recomendaciones formuladas en procesos de RPEI y priorizadas por el CCT, cuando corresponda."*
+
+\pagebreak
+
+# 4. RESULTADOS
+
+## 4.1. Objetivo específico 1:
+
+\vspace{-0.2cm}
+
+*"Implementar procedimientos de evaluación de stock basados en protocolos científicos para la determinación del estatus de sardina común, con arreglo al nivel de información, conocimiento e incertidumbre correspondiente, conforme a los estándares actuales en ciencia pesquera."*
+
+## 4.2. Objetivo específico 2:
+
+\vspace{-0.2cm}
+
+*"Establecer el estatus actualizado de sardina común, sobre la base de sus principales indicadores estandarizados de estado y flujo, propagando para estos efectos todas las fuentes de incertidumbre subyacente a la pesquería."*
+
+## 4.3. Objetivo específico 3:
+
+\vspace{-0.2cm}
+
+*"Determinar niveles de Captura Biológicamente Aceptable (CBA) que lleven y/o mantenga la pesquería en torno al Rendimiento Máximo Sostenible (RMS), a partir de un análisis de riesgo en condiciones de incertidumbre de no alcanzar los objetivos de conservación y sostenibilidad conforme lo establece la LGPA y contenidos en el Plan de Manejo y/o en el Programa de Recuperación respectivo, según corresponda."*
+
+## 4.4. Objetivo específico 4:
+
+\vspace{-0.2cm}
+
+*"Informar el avance del Programa de Mejoramiento Continuo de la Calidad en la Asesoría Científica (PMCCAC) realizado durante el presente estudio, respecto al cumplimiento de recomendaciones formuladas en procesos de RPEI y priorizadas por el CCT, cuando corresponda."*
+
+\pagebreak
+
+# 5. ANÁLISIS Y DISCUSIÓN DE RESULTADOS
+
+\pagebreak
+
+# 6. REFERENCIAS BIBLIOGRÁFICAS
