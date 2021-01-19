@@ -1,0 +1,432 @@
+---
+title: ''
+author: ''
+date: ''
+output:
+  word_document:
+    reference_docx: FormatoWord.docx
+    toc: yes
+lang: es
+subtitle: ''
+---
+
+
+
+```{r llama_codigos, warning=F, include=T, message=F, echo=FALSE}
+
+#rm(list=ls()) 
+library(stringr)
+library(ggplot2)
+library(ggthemes) # para themas de ggplot (fondos)
+library(knitr) # para función tabla (kable)
+library(patchwork) # para unir gráficos de ggplot
+library(reshape) # para mutate 
+library(dplyr) 
+
+#FIGURAS
+fig<-c("pdf","bmp") # guarda las figuras generadas por Rmarkdown en estos formatos
+dir.Fig<-"Figuras/" # guarda las figuras generadas en esta carpeta
+
+#DIRECTORIOS
+dir.0    <-getwd()  # directorio del proyecto
+dir.1    <-paste(dir.0,"/codigos_admb",sep="") # directorio de códigos admb
+dir.fun  <-paste(dir.0,"/funciones/",sep="") # directorio donde se guardan las funciones
+source(paste(dir.fun,"functions.R",sep="")) # funciones para leer .dat y .rep
+
+```
+
+```{r PRIMER PASO CORRE MODELOS BASE, eval=FALSE, echo=FALSE, warning=FALSE}
+setwd(dir.1)
+#Asesoría de septiembre
+# para mac MJZ
+system("~/admb-12.2/admb MAE0920") 
+system("./MAE0920")
+# para windows
+#system("admb MAE0920") 
+#system("MAE0920")
+
+```
+
+```{r  leer datos, echo=FALSE, warning=FALSE}
+setwd(dir.1)
+# ASESORíA DE SEPTIEMBRE
+dat.file1    = "MAE0920.dat"
+dat1        <- lisread(paste(dir.1,dat.file1, sep='/'));
+names(dat1) <- str_trim(names(dat1), side="right")
+rep1        <- reptoRlist("MAE0920.rep")                                               
+std1        <- read.table("MAE0920.std",header=T,sep="",na="NA",fill=T)  
+
+```
+
+
+
+\pagebreak
+
+
+# 2. ANTECEDENTES
+
+**Ejemplo Nº1: cómo insertar una figura de la carpeta Figuras"**
+
+```{=tex}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{Figuras/Figura1.png}
+\end{center}
+```
+\small \textbf{Figura 1}. Distribución espacial de datos provenientes del muestreo biológico realizado por IFOP para el monitoreo de la pesquería de sardina común. La línea color café corresponde a la isóbata de los 200 m. \vspace{0.5cm} \normalsize
+
+**Ejemplo Nº2: cómo generar un plot y que quede guardado en la carpeta Figuras**
+
+```{r antecedentes_desembarques,warning=F, include=T, message=F, echo=FALSE,fig.height=3.5,fig.width=5,fig.align="center",fig.path="Figuras/",dev=c("pdf","bmp")}
+year<-seq(2006,2020,1)
+desemb<-c(39146,50506,45078,49225,20123,16429,19763,21888,22951,23643,18495,14134,8366,12565,NA)
+cuota<-c(40522,50872,41904,58481,30966,17693,14500,21670,18276,23848,18380,20000,18897,11137,15471)
+
+
+par(mfcol=c(1,1),mar=c(4,4,1,1))
+plot(year,desemb,type="h",lwd=15,ylab="Desembarques (t.)",xlab="Año",ylim=c(0,60000),xaxp=c(2000,2021,21),col="cadetblue4",cex.lab=0.8,cex.axis=0.8)
+lines(year,cuota,type="l",lwd=2,col=1)
+legend(2011,60000,c("Datos oficiales","CBA"),lwd=c(10,2),col=c("cadetblue4",1),bty="n",cex=0.8)
+```
+
+
+\pagebreak
+
+# 3. METODOLOGÍA DE TRABAJO
+
+## 3.1. Objetivo específico 1:
+
+\vspace{-0.2cm}
+
+*"Implementar procedimientos de evaluación de stock basados en protocolos científicos para la determinación del estatus de sardina común, con arreglo al nivel de información, conocimiento e incertidumbre correspondiente, conforme a los estándares actuales en ciencia pesquera."*
+
+**Ejemplo Nº3 cómo incorporar una tabla con ecuaciones**
+
+**Algunos ayuda memoria para escribir ecuaciones en latex :**
+
+<http://minisconlatex.blogspot.com/2010/11/ecuaciones.html>
+
+<https://manualdelatex.com/tutoriales/ecuaciones>
+
+<https://rinconmatematico.com/instructivolatex/formulas.htm>
+
+```{=tex}
+\small
+\begin{center} 
+\textbf{Tabla 4.}
+\end{center}
+\begin{center} 
+\vspace{-0.2cm} Modelo de las observaciones del Modelo Anual con información en tallas.
+\end{center}
+```
++----------------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+
+| Variable                                           | Ecuación                                                                                          | Descripción                                                                                   |
++====================================================+===================================================================================================+===============================================================================================+
+| Captura estimada en número a la edad               | $\hat{C}_{l,t}=\frac{F_{l,t}}{Z_{l,t}}N_{l,t}\left(1-S_{l,t}\right)$                              | $\hat{C}_{l,t}$ Captura en número estimada a la longitud *l*                                  |
+|                                                    |                                                                                                   |                                                                                               |
+|                                                    |                                                                                                   | y *t* en el año.                                                                              |
++----------------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+
+| Desembarques en peso                               | $\hat{Y}_t=\sum_l \hat{C}_{l,t}w_{l}$                                                             | $w_{l}$ es el peso medio a la longitud *l*                                                    |
++----------------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+
+| Proporción de la captura a la longitud de la flota | $\hat{p}^f_{l,t}=\frac{\hat{C}_{l,t}}{\sum_l\hat{C}_{l,t}}$                                       | $\hat{C}_{l,t}$ Captura en número estimada a la longitud *l*.                                 |
++----------------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+
+| Abundancia a la longitud del crucero               | $\hat{N}_{l,t}^c=N_{l,t} e^{-dt^cZ_{l,t}}S^c_l$                                                   | $dt^c$ es la fracción del año en la cual se realiza el crucero                                |
++----------------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+
+| Selectividad del crucero                           | $S_l^c=\left(1+exp\left[-ln19\frac{(l-l_{50\%}^c}{\Delta^c}\right]\right)^{-1}$                   | $l_{50\%}^c$ longitud al 50%                                                                  |
+|                                                    |                                                                                                   |                                                                                               |
+|                                                    |                                                                                                   | $\Delta^c$ rango entre la longitud al 95% y 50%                                               |
++----------------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+
+| Biomasa total del crucero                          | $\hat{B}_t^c=q^c\sum_l\hat{N}_{l,t}^{c}w_l$                                                       | $w_{l}$ es el peso medio a la longitud $q^c$ es la capturabilidad/ disponibilidad del crucero |
++----------------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+
+| Captura por Unidad de esfuerzo                     | $\hat{CPUE}_t=q\left[\sum^{lmax}_{lmin}S_{l,t}N_{l,t}w_l\frac{(1-exp(-Z_{l,t}))}{Z_{l,t}}\right]$ | *q*: coeficiente de capturabilidad                                                            |
++----------------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------+
+
+\pagebreak
+
+# 4. RESULTADOS
+
+## 4.1. Objetivo específico 1:
+
+\vspace{-0.2cm}
+
+*"Implementar procedimientos de evaluación de stock basados en protocolos científicos para la determinación del estatus de sardina común, con arreglo al nivel de información, conocimiento e incertidumbre correspondiente, conforme a los estándares actuales en ciencia pesquera."*
+
+### 4.1.1. Datos de entrada
+
+```{r F17_datInd, warning=F, include=T, message=F, echo=FALSE,fig.height=7,fig.width=5,fig.align="center",fig.path=dir.Fig,dev=fig}
+
+des_obs <- data.frame(rep1$desembarqueobs)
+bc_obs  <- data.frame(rep1$reclasobs)
+bp_obs  <- data.frame(rep1$pelacesobs)
+yearc   <- rep1$years 
+nyearc  <-length(yearc)  
+
+ obsC  <- as.data.frame(bc_obs) %>% mutate(year=yearc) %>% melt(id.vars='year') %>% mutate(type='2.Cruceros de Verano')
+ obsP  <- as.data.frame(bp_obs) %>% mutate(year=yearc) %>% melt(id.vars='year') %>% mutate(type='3.Cruceros de Otoño')
+ obsD  <- as.data.frame(des_obs) %>% mutate(year=yearc) %>% melt(id.vars='year') %>% mutate(type='1.Desembarques')
+ Bcru  <-rbind(obsC,obsP,obsD)
+
+p <- ggplot()  +
+  geom_bar(data=Bcru, aes(x=year, y =value), stat="identity", fill='gray66', 
+                   color = 'gray28') + 
+    facet_wrap(~type,scale="free",dir = 'v', as.table = TRUE) + labs(x="Años", y="Toneladas")
+p +  theme(panel.background = element_rect(fill ="gray99")) + theme(panel.grid=element_line(color="gray66"))
+
+```
+
+\vspace{-0.5cm} \small \textbf{Figura 17}. Serie de desembarques y biomasas estimadas por la evaluación hidroacústica de verano y otoño utilizadas como datos de entrada al modelo de evaluación de stock de sardina común de las Regiones de Valparaíso a Los Lagos. \vspace{0.5cm} \normalsize
+
+\small
+\begin{center} 
+\textbf{Tabla 1.}
+\end{center}
+\begin{center} 
+\vspace{-0.2cm} Índices de abundancia utilizadas en la evaluación de stock de sardina común provenientes de los cruceros de Verano (RECLAS), Otoño (PELACES), crucero de huevos (MPDH) y Desembarques + Descarte y sus respectivos coeficientes de variación (cv).
+\end{center}
+\vspace{-0.2cm} 
+
+
+
+```{r datos entrada,warning=F, include=T, message=F, echo=FALSE, }
+kable(dat1$Ind,  col.names = c('Años','Biomasa Crucero Verano', 'cv', 'Biomasa Crucero Otoño', 'cv', 'MPDH','cv','Desembarques','cv'),align = 'c')
+
+```
+
+\pagebreak
+
+### 4.1.2.  Ajuste del modelo a los datos
+
+```{r Fig26_Ajustes_indices,warning=F, include=T, message=F, echo=FALSE,fig.height=7,fig.width=6,fig.align="center",fig.path=dir.Fig,dev=c('pdf')}
+
+yrs   <- rep1$years
+nyrs  <- length(yrs)
+lasty <- yrs[nyrs]
+cvBcV   <-0.30
+cvBcO   <-0.30
+cvdes   <-0.01
+
+ind_obs           <- cbind(rep1$reclasobs,rep1$pelacesobs, rep1$desembarqueobs); ind_obs[ind_obs==0] <- NA
+colnames(ind_obs) <- c('Crucero_verano', 'Crucero_otoño', 'Desembarques') 
+ind               <- data.frame(ind_obs) %>% mutate(Asesoria='observado') %>% mutate (yrs= yrs) %>% melt(id.var=c('yrs', 'Asesoria'))  
+        
+
+ind_sept           <- cbind(c(rep1$reclaspred), c(rep1$pelacespred), c(rep1$desembarquepred)) 
+colnames(ind_sept) <- c('Crucero_verano', 'Crucero_otoño', 'Desembarques') 
+sept               <- data.frame(ind_sept) %>% mutate (Asesoria='septiembre_2020') %>% mutate (yrs= yrs)  %>% melt(id.var=c('yrs', 'Asesoria'))
+
+base1 <- data.frame(rbind(ind, sept))  
+
+
+BcV <- ggplot(base1 %>% filter(Asesoria!='observado', variable=='Crucero_verano'), 
+       aes(yrs,value/1000000)) + 
+       geom_line(aes(colour=Asesoria), size=0.8) +
+       scale_colour_manual(values=c('black')) +
+       geom_point(data = base1 %>% filter(Asesoria=='observado', variable=='Crucero_verano'),
+       aes(yrs,value/1000000), shape = 19, colour = 'gray30') +
+       geom_errorbar(data = base1 %>% filter(Asesoria=='observado', variable=='Crucero_verano'),
+       aes(ymin = value*exp(-1.96*cvBcO)*10^-6, ymax = value*exp(1.96*cvBcO)*10^-6), color = 'gray30') +
+       scale_x_continuous(breaks = seq(from = 1985, to = 2020, by = 5)) +
+       labs(x = '', y = 'Toneladas (millones)') +
+       theme_bw(base_size=9) + 
+       ggtitle('Crucero de verano')+
+       theme(plot.title = element_text(hjust = 0.5),legend.position="none")
+
+BcP <- ggplot(base1 %>% filter(Asesoria!='observado', variable=='Crucero_otoño'), 
+       aes(yrs,value/1000000)) + 
+       geom_line(aes(colour=Asesoria), size=0.8) +
+       scale_colour_manual(values=c('black'),name="Asesorías") +
+       geom_point(data = base1 %>% filter(Asesoria=='observado', variable=='Crucero_otoño'),
+       aes(yrs,value/1000000), shape = 19, colour = 'gray30') +
+       geom_errorbar(data = base1 %>% filter(Asesoria=='observado', variable=='Crucero_otoño'),
+       aes(ymin = value*exp(-1.96*cvBcV)*10^-6, ymax = value*exp(1.96*cvBcV)*10^-6), color = 'gray30') +
+       scale_x_continuous(breaks = seq(from = 1985, to = 2020, by = 5)) +
+       labs(x = '', y = 'Toneladas (millones)') +
+       theme_bw(base_size=9) + 
+       ggtitle('Crucero de otoño')+
+       theme(plot.title = element_text(hjust = 0.5))
+
+d   <- ggplot(base1 %>% filter(Asesoria!='observado', variable=='Desembarques'), 
+       aes(yrs,value/1000)) +
+       geom_line(aes(colour=Asesoria), size=0.8) +
+       scale_colour_manual(values=c('black')) +
+       geom_point(data = base1 %>% filter(Asesoria=='observado', variable=='Desembarques'),
+       aes(yrs,value/1000), shape = 19, colour = 'gray30') +
+       geom_errorbar(data = base1 %>% filter(Asesoria=='observado', variable=='Desembarques'),
+       aes(ymin = value*exp(-1.96*cvdes)*10^-3, ymax = value*exp(1.96*cvdes)*10^-3), color = 'gray30') +
+       scale_x_continuous(breaks = seq(from = 1985, to = 2020, by = 5)) +
+       labs(x = '', y = 'Toneladas (miles)') +
+       theme_bw(base_size=9) + 
+       ggtitle('Desembarques') +
+       theme(plot.title = element_text(hjust = 0.5),legend.position="none")
+
+BcV/BcP/d + plot_layout(guides="collect")
+
+```
+
+\small \textbf{Figura 26}. Ajustes del modelo anual en edades  a los valores de biomasas de cruceros de verano, otoño y desembarques. Las barras corresponden al intervalo de confianza asintótico y el círculo al valor del estimador central. 
+\normalsize
+
+
+```{r Fig28_ajustesCompF,warning=F, include=T, message=F, echo=FALSE,fig.height=7,fig.width=8,fig.align="center",fig.path=dir.Fig,dev=c('pdf')}
+age  <-seq(0,4,1)                                            
+nage<-length(age)   
+
+etcf1_obs <- data.frame(rep1$pf_obs)
+etcf1_pre <- rbind(rep1$pf_pred) 
+
+yearc1   <- dat1$Ind[,1] 
+nyearc1  <- length(yearc1)  
+
+ obs  <- as.data.frame(etcf1_obs) %>% mutate(year=yearc1) %>% melt(id.vars='year') %>%
+              mutate(edad = rep(age, each=nyearc1)) %>% mutate(type='obs')
+ 
+ pred_sep <- as.data.frame(etcf1_pre) %>% mutate(year=yearc1) %>% melt(id.vars='year') %>%
+              mutate(edad = rep(age, each=nyearc1)) %>% mutate(type='septiembre_2020')
+ 
+  mat  <- rbind(obs,pred_sep)
+ 
+  fig1 <- ggplot(filter(mat, type=='obs')) + 
+          geom_bar(aes(x = edad, y = value), stat="identity", fill='gray66', color = 'gray28') + 
+          facet_wrap(~year, dir = 'v', as.table = TRUE) + labs(x = 'Edad', y = 'Proporción') +
+          geom_line(data = mat %>% filter(type != 'obs'), aes(x = edad, y = value, colour=type)) +
+          scale_colour_manual(values=c('black'),name="Asesorías") +
+          theme(panel.background = element_rect(fill ="gray99")) + theme(panel.grid=element_line(color=NA)) +
+          ggtitle("FLOTA") + theme(plot.title = element_text(size = 12))
+  fig1
+  
+```
+
+\small \textbf{Figura 28}. Ajustes del modelo a las composiciones de edades de las **Capturas de la flota** sardina común centro-sur. 
+\vspace{0.5cm}
+\normalsize
+
+\pagebreak
+
+
+
+## 4.2. Objetivo específico 2:
+
+\vspace{-0.2cm}
+
+*"Establecer el estatus actualizado de sardina común, sobre la base de sus principales indicadores estandarizados de estado y flujo, propagando para estos efectos todas las fuentes de incertidumbre subyacente a la pesquería."*
+
+### 4.2.1. Indicadores del stock
+
+```{r Variables_sept, echo=F,message=FALSE, warning=FALSE, include=T}
+
+years1<-rep1$years
+nyears1<-length(years1)
+
+Rt1      <- c(subset(std1,name=="Reclutas")$value) 
+Rt1std   <- c(subset(std1,name=="Reclutas")$std)
+BT1      <- c(subset(std1,name=="BT")$value)   
+BT1std   <- c(subset(std1,name=="BT")$std)
+BD1      <- c(subset(std1,name=="SSB")$value)   
+BD1std   <- c(subset(std1,name=="SSB")$std)
+Ft1      <- c(subset(std1,name=="log_Ft")$value)   
+Ft1std   <- c(subset(std1,name=="log_Ft")$std)
+
+VarPobSep<- data.frame(x=years1, Rt1=Rt1,BT1=BT1,BD1=BD1,Ft1=exp(Ft1), 
+         lowerRt1 = (Rt1 -1.96*Rt1std), upperRt1 = (Rt1+1.96*Rt1std),
+         lowerBT1 = (BT1 -1.96*BT1std), upperBT1 = (BT1+1.96*BT1std),
+         lowerBD1 = (BD1 -1.96*BD1std), upperBD1 = (BD1+1.96*BD1std),
+         lowerFt1 = exp(Ft1 -1.96*Ft1std), upperFt1 = exp(Ft1+1.96*Ft1std))
+
+```
+
+
+
+```{r F30_Varpobl, echo=FALSE, message=FALSE, warning=FALSE, include=T, fig.align="center", fig.height=6, fig.width=8}
+
+
+Rt <- ggplot() + 
+    geom_line(data=VarPobSep,aes(y=Rt1, x=x, colour = "septiembre 2020"), size=0.5)+
+    geom_ribbon(data=VarPobSep,aes(ymin=lowerRt1, ymax=upperRt1, x=x, fill = "IC"), alpha = 0.2)+
+    labs(x = '', y = 'Reclutamientos',colour='Asesorías')  +
+     scale_x_continuous(breaks = seq(from = 1960.1, to = 2022.1, by = 2)) +
+    scale_colour_manual("",values=c("black"))+
+    scale_fill_manual("",values=c('gray30'))+
+    theme_bw(base_size=8) +
+     ggtitle('')+
+     theme(plot.title = element_text(hjust = 0.5),legend.position="top")
+
+BT <- ggplot(VarPobSep) + 
+     geom_line(aes(y=BT1, x=x, colour = "septiembre 2020"), size=0.5)+
+     geom_ribbon(aes(ymin=lowerBT1, ymax=upperBT1, x=x, fill = "IC"), alpha = 0.2)+
+    labs(x = '', y = 'Biomasa total',colour='Asesorías')  +
+     scale_x_continuous(breaks = seq(from = 1960.1, to = 2022.1, by = 2)) +
+    scale_colour_manual("",values=c("black"))+
+    scale_fill_manual("",values=c('gray30'))+
+    theme_bw(base_size=8) +
+     ggtitle('')+
+     theme(plot.title = element_text(hjust = 0.5),legend.position="none")
+
+BD <- ggplot(VarPobSep) + 
+     geom_line(aes(y=BD1, x=x, colour = "septiembre 2020"), size=0.5)+
+     geom_ribbon(aes(ymin=lowerBD1, ymax=upperBD1, x=x, fill = "IC"), alpha = 0.2)+
+     labs(x = '', y = 'Biomasa desovante',colour='Asesorías')  +
+     scale_x_continuous(breaks = seq(from = 1960.1, to = 2022.1, by = 2)) +
+     scale_colour_manual("",values=c("black"))+
+     scale_fill_manual("",values=c('gray30'))+
+     theme_bw(base_size=8) +
+     ggtitle('')+
+     theme(plot.title = element_text(hjust = 0.5),legend.position="top")
+
+Ft <- ggplot(VarPobSep) + 
+    geom_line(aes(y=Ft1, x=x, colour = "septiembre 2020"), size=0.5)+
+    geom_ribbon(aes(ymin=lowerFt1, ymax=upperFt1, x=x, fill = "IC"), alpha = 0.2)+
+    labs(x = '', y = 'Mortalidad por pesca',colour='Asesorías')  +
+    scale_x_continuous(breaks = seq(from = 1960.1, to = 2022.1, by = 2)) +
+    scale_colour_manual("",values=c("black"))+
+    scale_fill_manual("",values=c('gray30'))+
+    theme_bw(base_size=8) +
+     ggtitle('')+
+     theme(plot.title = element_text(hjust = 0.5),legend.position="none")
+
+ (Rt/BT) | (BD/Ft)
+
+
+```
+
+\vspace{-0.5cm}
+
+\small \textbf{Figura 30}. a) Reclutamientos, b) Biomasa total, c) Biomasa desovante y d) mortalidad por pesca de anchoveta centro-sur. Las línea segmentada corresponde al promedio y mediana de la serie respectiva. \vspace{0.5cm} \normalsize
+
+
+
+\pagebreak
+
+```{=tex}
+\small
+\begin{center} 
+\textbf{Tabla 2.}
+\end{center}
+\begin{center} 
+\vspace{-0.2cm} Variables poblacionales  estimadas en la evaluación de septiembre 2020  de sardina común de las Regiones de Valparaíso a Los Lagos.
+\end{center}
+\vspace{-0.2cm}
+\footnotesize
+```
+```{r Tabla_28, echo=FALSE,warning=FALSE}
+
+Rt1      <- c(subset(std1,name=="Reclutas")$value) 
+Rt1std   <- c(subset(std1,name=="Reclutas")$std)
+BT1      <- c(subset(std1,name=="BT")$value)   
+BT1std   <- c(subset(std1,name=="BT")$std)
+BD1      <- c(subset(std1,name=="SSB")$value)   
+BD1std   <- c(subset(std1,name=="SSB")$std)
+Ft1      <- c(subset(std1,name=="log_Ft")$value)   
+Ft1std   <- c(subset(std1,name=="log_Ft")$std)
+
+
+VarPobl1<- cbind('Año'=years1,
+                 "$BD_{sept}$"=c(BD1),
+                 "$BT_{sept}$"=c(BT1),
+                 "$R_{sept}$"=c(Rt1),
+                 "$F_{sept}$"=c(round(exp(Ft1),3)))
+
+
+kable(VarPobl1)
+
+```
+
+
