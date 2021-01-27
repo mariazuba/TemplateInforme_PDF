@@ -33,5 +33,5 @@ se incorporan chuck donde se introduce código de R para leer datos, reporte, st
 
 Las figuras también pueden ser ingresadas directamente de la carpeta Figuras (gráficos generados en otros códigos o esquemas por ejemplo) y las tablas pueden ser ingresadas a mano, hay varias formas de hacer tablas, una forma fácil es utilizar el editor de Rstudio e insertar tabla con botón que aparece en la barra superior.
 
-
+Creo que son buenos los talleres! sigamos en esa!
 
