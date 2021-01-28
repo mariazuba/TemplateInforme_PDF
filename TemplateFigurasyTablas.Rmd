@@ -57,15 +57,15 @@ source(paste(dir.fun,"functions.R",sep="")) # funciones para leer .dat y .rep
 
 ```
 
-```{r PRIMER PASO CORRE MODELOS BASE, eval=FALSE, echo=FALSE, warning=FALSE}
+```{r PRIMER PASO CORRE MODELOS BASE, eval=FALSE, echo=FALSE, warning=FALSE, include=F}
 setwd(dir.1)
 #Asesoría de septiembre
 # para mac MJZ
-system("~/admb-12.2/admb MAE0920") 
-system("./MAE0920")
+#system("~/admb-12.2/admb MAE0920") 
+#system("./MAE0920")
 # para windows
-#system("admb MAE0920") 
-#system("MAE0920")
+system("admb MAE0920") 
+system("./MAE0920")
 
 ```
 

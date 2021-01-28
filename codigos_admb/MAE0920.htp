@@ -1,0 +1,286 @@
+#if !defined(_MAE0920_)
+#  define _MAE0920_
+
+class model_data : public ad_comm{
+  data_int nanos;
+  data_int nedades;
+  data_int ntallas;
+  data_vector edades;
+  data_vector Tallas;
+  data_vector msex;
+  data_matrix matdat;
+  data_matrix Ctot;
+  data_matrix Ccru_a;
+  data_matrix Ccru_pel;
+  data_matrix Ccru_l;
+  data_matrix Wmed;
+  data_vector Wmedp_3;
+  data_matrix Win;
+  data_vector Winip_3;
+  data_matrix error_edad;
+  int reporte_mcmc;
+  data_number sigmaR;
+  data_number cvpriorq_reclas;
+  data_number cvpriorq_pelaces;
+  data_number log_priorRo;
+  data_vector nmus;
+  data_vector dt;
+  data_int Fase_Sflota;
+  data_int Fase_Sreclas;
+  data_int Fase_Spelaces;
+  data_int opt_qrecl;
+  data_int opt_qpela;
+  data_int opt_qmph;
+  data_vector pars_Bio;
+  data_int opt_Lo;
+  data_int opt_cv;
+  data_number erredad;
+  data_int opt_M;
+  data_int opt_Ro;
+  data_int opt_devR;
+  data_int opt_devNo;
+  data_int opt_F;
+  data_int opt_Fspr;
+  data_int npbr;
+  data_vector ratio;
+  data_int nproy;
+  data_number opProy;
+  data_int opt_Str;
+  data_number oprec;
+  data_vector prop;
+  data_number opWmed;
+  data_number mF;
+  data_vector prop_est;
+  ~model_data();
+  model_data(int argc,char * argv[]);
+  friend class model_parameters;
+};
+
+class model_parameters : public model_data ,
+  public function_minimizer
+{
+public:
+  ~model_parameters();
+  void preliminary_calculations(void);
+  void set_runtime(void);
+  static int mc_phase(void)
+  {
+    return initial_params::mc_phase;
+  }
+  static int mceval_phase(void)
+  {
+    return initial_params::mceval_phase;
+  }
+  static int sd_phase(void)
+  {
+    return initial_params::sd_phase;
+  }
+  static int current_phase(void)
+  {
+    return initial_params::current_phase;
+  }
+  static int last_phase(void)
+  {
+    return (initial_params::current_phase
+      >=initial_params::max_number_phases);
+  }
+  static prevariable current_feval(void)
+  {
+    return *objective_function_value::pobjfun;
+  }
+private:
+  dvariable adromb(dvariable(model_parameters::*f)(const dvariable&), double a, double b, int ns)
+  {
+    using namespace std::placeholders;
+    _func func = std::bind(f, this, _1);
+    return function_minimizer::adromb(func, a, b, ns);
+  }
+  ivector integer_control_flags;
+  dvector double_control_flags;
+  param_init_bounded_number A50flota;
+  param_init_bounded_number log_rangoflota;
+  param_init_bounded_number A50reclas;
+  param_init_bounded_number log_rangoreclas;
+  param_init_bounded_number A50pelaces;
+  param_init_bounded_number log_rangopelaces;
+  param_init_bounded_number log_Ro;
+  param_init_bounded_vector log_desv_No;
+  param_init_bounded_dev_vector log_desv_Rt;
+  param_init_bounded_vector log_Ft;
+  param_init_number log_qrecl;
+  param_init_number log_qpela;
+  param_init_number log_qmph;
+  param_init_bounded_number log_Lo;
+  param_init_bounded_number log_cv_edad;
+  param_init_bounded_number log_M;
+  param_init_bounded_vector log_Fref;
+  param_vector anos;
+  param_vector Unos_edad;
+  param_vector Unos_anos;
+  param_vector Unos_tallas;
+  param_matrix Sel_flota;
+  param_matrix Sel_reclas;
+  param_matrix Sel_pelaces;
+  param_number Linf;
+  param_number k;
+  param_number Lo;
+  param_number cv_edad;
+  param_vector mu_edad;
+  param_vector sigma_edad;
+  param_matrix Prob_talla;
+  param_matrix P1;
+  param_matrix P2;
+  param_matrix P3;
+  param_number M;
+  param_matrix Ftot;
+  param_matrix Z;
+  param_matrix S;
+  param_vector Neq;
+  param_number SSBo;
+  param_matrix N;
+  param_matrix NM;
+  param_matrix NVflota;
+  param_matrix NVreclas;
+  param_matrix NVpelaces;
+  param_matrix NVpelaces_l;
+  param_matrix NMD;
+  param_stddev_vector Reclutas;
+  param_stddev_vector SSB;
+  param_vector BD;
+  param_stddev_vector BT;
+  param_vector Bflota;
+  param_vector Bpelaces;
+  param_vector Breclas;
+  param_matrix pred_Ctot;
+  param_matrix pobs_f;
+  param_matrix ppred_f;
+  param_matrix pobs_crua;
+  param_matrix ppred_crua;
+  param_matrix pobs_pel;
+  param_matrix ppred_pel;
+  param_matrix pobs_crul;
+  param_matrix ppred_crul;
+  param_number qrecl;
+  param_number qpela;
+  param_vector Reclas;
+  param_vector Reclas_pred;
+  param_vector Pelaces;
+  param_vector Pelaces_pred;
+  param_vector MPH;
+  param_vector MPH_pred;
+  param_vector Desemb;
+  param_vector Desemb_pred;
+  param_matrix Nv;
+  param_matrix NDv;
+  param_matrix NMDv;
+  param_vector BDo;
+  param_vector RPRdin;
+  param_vector RPRequ;
+  param_vector RPRequ2;
+  param_stddev_vector RPRequ3;
+  param_stddev_vector Frpr;
+  param_vector Fspr;
+  param_vector Zspr;
+  param_vector Nspro;
+  param_vector Nspr;
+  param_vector Nmed;
+  param_number Bspro;
+  param_number Bspr;
+  param_vector ratio_spr;
+  param_number Fmedian;
+  param_vector Fmed;
+  param_vector Zmed;
+  param_number Bsprmed;
+  param_number ratio_Fmed;
+  param_number Bmed;
+  param_number Bo;
+  param_stddev_vector Brms;
+  param_number Blim;
+  param_matrix cvar;
+  param_vector likeval;
+  param_number prior_function_value;
+  param_number likelihood_function_value;
+  objective_function_value f;
+  param_number Fref_r0;
+  param_vector Frms_r0;
+  param_vector Zrms_r0;
+  param_vector CTP_r0;
+  param_number YTP_r0;
+  param_vector NMD_r0;
+  param_number BD_r0;
+  param_number RPR_r0;
+  param_number Fref_r1;
+  param_vector Frms_r1;
+  param_vector Zrms_r1;
+  param_vector CTP_r1;
+  param_number YTP_r1;
+  param_vector NMD_r1;
+  param_number BD_r1;
+  param_number RPR_r1;
+  param_vector Np;
+  param_vector Sp;
+  param_vector Nvp;
+  param_vector RPRp;
+  param_vector Npp;
+  param_vector Wmedp;
+  param_vector Winp;
+  param_number Fref_p0;
+  param_vector Frms_p0;
+  param_vector Zrms_p0;
+  param_vector CTP_p0;
+  param_vector YTP_p0;
+  param_stddev_vector BD_p0;
+  param_stddev_vector RPR_p0;
+  param_vector NVrecl_p0;
+  param_vector NVpel_p0;
+  param_vector Brecl_p0;
+  param_vector Bpel_p0;
+  param_number Fref_p1;
+  param_vector Frms_p1;
+  param_vector Zrms_p1;
+  param_vector CTP_p1;
+  param_vector YTP_p1;
+  param_vector NMD_p1;
+  param_vector BD_p1;
+  param_vector RPR_p1;
+  param_stddev_number CBA_c0;
+  param_stddev_number CBA_c1;
+  param_vector log_Reclutas;
+  param_vector Rpred;
+  param_vector edad_rel;
+  param_number suma1;
+  param_number suma2;
+  param_number suma3;
+  param_number suma4;
+  param_number nm1;
+  param_number nm2;
+  param_number nm3;
+  param_number nm4;
+  param_number alfa;
+  param_number beta;
+  param_number cuenta1;
+  param_number cuenta2;
+  param_number cuenta3;
+  param_number cuenta4;
+public:
+  virtual void userfunction(void);
+  virtual void report(const dvector& gradients);
+  virtual void final_calcs(void);
+  model_parameters(int sz,int argc, char * argv[]);
+  virtual void initializationfunction(void);
+  void Eval_selectividad_logis(void);
+  void Eval_prob_talla_edad(void);
+  void Eval_mortalidades(void);
+  void Eval_abundancia(void);
+  void Eval_biomasas(void);
+  void Eval_capturas_predichas(void);
+  void Eval_indices(void);
+  void Eval_PBR(void);
+  void Eval_Estatus(void);
+  void Eval_logverosim(void);
+  void Eval_funcion_objetivo(void);
+  void Eval_CTP(void);
+  void Eval_mcmc(void);
+
+};
+#endif
