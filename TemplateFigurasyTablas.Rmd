@@ -2,6 +2,11 @@
 title: 
 lang: es
 output: pdf_document
+bibliography: bibliography.bib
+link-citations: yes # Referencias cruzadas a las citas
+#csl: apa7.csl #https://www.zotero.org/styles?q=apa
+#csl: the-plant-journal.csl
+csl: apa-annotated-bibliography.csl # un tipo de style apa 7th edicion
 toc: TRUE # pone el índice
 header-includes:
 - \usepackage{draftwatermark} # paquete para generar marca de agua en el documento
@@ -89,12 +94,23 @@ std1        <- read.table("MAE0920.std",header=T,sep="",na="NA",fill=T)
 
 **Ejemplo Nº1: cómo insertar una figura de la carpeta Figuras"**
 
+
 ```{=tex}
-\begin{center}
-\includegraphics[width=0.8\textwidth]{Figuras/Figura1.png}
-\end{center}
+\begin{figure}[htb!]
+ \centering
+ \includegraphics[width=0.8\textwidth]{Figuras/Figura1.png}
+ \caption{Distribución espacial del langostino amarillo y área donde se desarrolla la actividad pesquera.}
+ \label{f1}
+\end{figure}
 ```
-\small \textbf{Figura 1}. Distribución espacial de datos provenientes del muestreo biológico realizado por IFOP para el monitoreo de la pesquería de sardina común. La línea color café corresponde a la isóbata de los 200 m. \vspace{0.5cm} \normalsize
+
+<!-- \small \textbf{Figura 1}. Distribución espacial de datos provenientes del muestreo biológico realizado por IFOP para el monitoreo de la pesquería de sardina común. La línea color café corresponde a la isóbata de los 200 m. \vspace{0.5cm} \normalsize -->
+
+Como se observa, en la (**Figura \ref{f1}**), los desembarques bla bla bla
+
+
+El langostino amarillo se distribuye sobre la plataforma continental de Chile y talud superior desde los 23°00' LS hasta los 38°20' LS (**Figura \ref{f1}**) y entre los veriles de 150 m a 400 m de profundidad [@Bahamonde2003_1]. Otros autores han descrito que este recurso se caracteriza por presentar densas agrupaciones o focos de concentración variables interanualmente [@Canales2012_1], y que presenta hábitos demersales, viviendo en fondos de grava y fango y ocasionalmente en los márgenes de zonas rocosas [@Ahumada2013_1].
+
 
 **Ejemplo Nº2: cómo generar un plot y que quede guardado en la carpeta Figuras**
 
@@ -450,5 +466,12 @@ VarPobl1<- cbind('Año'=years1,
 kable(VarPobl1)
 
 ```
+
+\pagebreak
+
+# 7. REFERENCIAS BIBLIOGRÁFICAS
+
+\vspace{0.3cm}
+
 
 
