@@ -9,8 +9,14 @@ header-includes:
 - \usepackage{fancyhdr} #
 - \usepackage{graphicx}
 - \usepackage{parskip}
-- \usepackage{geometry}
+- \usepackage{geometry} 
 - \usepackage{helvet}
+- \usepackage{amsmath} # Agregados por Fer
+- \usepackage{amssymb} # Agregados por Fer
+- \usepackage{gensymb} # Agregados por Fer
+- \usepackage{caption} # Agregados por Fer
+- \captionsetup[table]{name=\textbf{Tabla}} # Editado AYR (Tabla en negrita)
+- \captionsetup[figure]{name=\textbf{Figura}} # Editado AYR (Figura en negrita)
 - \pagestyle{fancy}
 - \geometry{top=1.5cm, bottom=1cm, left=2.5cm, right=2.5cm}
 - \renewcommand{\familydefault}{\sfdefault}
